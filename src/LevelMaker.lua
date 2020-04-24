@@ -16,6 +16,8 @@ function LevelMaker.generate(width, height)
     local objects = {}
 
     local tileID = TILE_ID_GROUND
+    local keyGenerated = false
+    local lockGenerated = false
 
     -- whether we should draw our tiles with toppers
     local topper = true
@@ -91,6 +93,36 @@ function LevelMaker.generate(width, height)
                         collidable = false
                     }
                 )
+            end
+
+            -- randomly generates a key in first 9/10's of level on any regular
+            -- grould tile.
+
+            if keyGenerated == false then
+                local xLoc = math.random(width - width / 10)
+
+                table.insert(objects, -- key block
+                GameObject {
+                    texture = 'keys-and-locks',
+                    x = (xLoc - 1) * TILE_SIZE,
+                    y = (6 - 1) * TILE_SIZE,
+                    width = 16,
+                    height = 16,
+
+                    -- make it a random variant
+                    frame = math.random(4),
+                    collidable = true,
+                    hit = false,
+                    solid = false,
+                    consumable = true,
+
+                    -- collision function takes itself
+                    onConsume = function(player, object)
+                        gSounds['pickup']:play()
+                        player.score = player.score + 100
+                    end
+                })
+                keyGenerated = true
             end
 
             -- chance to spawn a block
