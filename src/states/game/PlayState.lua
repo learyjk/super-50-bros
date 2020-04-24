@@ -32,9 +32,11 @@ function PlayState:init()
         level = self.level
     })
 
+    self:spawnPlayer()
     self:spawnEnemies()
 
     self.player:changeState('falling')
+
 end
 
 function PlayState:update(dt)
@@ -65,15 +67,15 @@ function PlayState:render()
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256), 0)
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
-    
+
     -- translate the entire view of the scene to emulate a camera
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
-    
+
     self.level:render()
 
     self.player:render()
     love.graphics.pop()
-    
+
     -- render score
     love.graphics.setFont(gFonts['medium'])
     love.graphics.setColor(0, 0, 0, 255)
@@ -110,7 +112,7 @@ function PlayState:spawnEnemies()
 
                     -- random chance, 1 in 20
                     if math.random(20) == 1 then
-                        
+
                         -- instantiate snail, declaring in advance so we can pass it into state machine
                         local snail
                         snail = Snail {
@@ -135,4 +137,15 @@ function PlayState:spawnEnemies()
             end
         end
     end
+end
+
+function PlayState:spawnPlayer()
+    --start at bottom left tile and move right until we find a ground tile (no chasm).
+    local t = self.tileMap.tiles[self.tileMap.height][1].id
+    local count = 1
+    while t ~= TILE_ID_GROUND do
+        count = count + 1
+        t = self.tileMap.tiles[self.tileMap.height][count].id
+    end
+    self.player.x = (count - 1) * TILE_SIZE
 end
