@@ -40,11 +40,30 @@ function LevelMaker.generate(width, height)
 
         screen = SCREEN_TILE_WIDTH
         -- chance to just be emptiness
-        if math.random(7) == 1 and x ~= width - screen then
+        if math.random(7) == 1 then
+            --reserved for lock block
+            if x >= (width - screen - 1 + screen/2) and x <= (width - screen + 1 + screen/2) then
+                for y = 7, height do
+                    table.insert(tiles[y],
+                        Tile(x, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
+                end
+                goto continue
+            end
+            --reserved for flag
+            if x >= (width - 3) then
+                for y = 7, height do
+                    table.insert(tiles[y],
+                        Tile(x, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
+                end
+                goto continue
+            end
+
+            --spawn empty
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
             end
+            ::continue::
         else
             tileID = TILE_ID_GROUND
 
@@ -55,8 +74,13 @@ function LevelMaker.generate(width, height)
                     Tile(x, y, tileID, y == 7 and topper or nil, tileset, topperset))
             end
 
-            if x == (width - screen) then
-                -- make sure it's a blank ground tile for lock block.
+            -- ensure 3 normal ground tiles for lock block.
+            if x >= (width - screen - 1 + screen/2) and x <= (width - screen + 1 + screen/2) then
+                goto continue
+
+            -- last 3 tiles for flag get a normal ground tile.
+            elseif x >= (width - 3) then
+                goto continue
 
             -- chance to generate a pillar.
             elseif math.random(8) == 1 then
@@ -124,7 +148,7 @@ function LevelMaker.generate(width, height)
                                 -- lock block
                                 GameObject {
                                     texture = 'keys-and-locks',
-                                    x = (width - screen - 1) * TILE_SIZE,
+                                    x = (width - screen - 1 + screen/2) * TILE_SIZE,
                                     y = (6 - 1) * TILE_SIZE,
                                     width = 16,
                                     height = 16,
@@ -137,7 +161,20 @@ function LevelMaker.generate(width, height)
                                     consumable = true,
 
                                     onConsume = function(player, object)
+                                        -- spawns flagpole
                                         gSounds['powerup-reveal']:play()
+                                        table.insert(objects,
+                                            GameObject {
+                                                texture = 'flagpoles',
+                                                x = (width - 2) * TILE_SIZE,
+                                                y = (4 - 1) * TILE_SIZE,
+                                                width = 16,
+                                                height = 64,
+
+                                                -- select random frame from bush_ids whitelist, then random row for variance
+                                                frame = math.random(3)
+                                            }
+                                        )
                                     end
                                 }
                             )
@@ -211,7 +248,9 @@ function LevelMaker.generate(width, height)
                 )
             end
         end
+        ::continue::
     end
+
 
     local map = TileMap(width, height)
     map.tiles = tiles
