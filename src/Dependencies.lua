@@ -79,16 +79,15 @@ gTextures = {
 
 gFrames = {
     ['tiles'] = GenerateQuads(gTextures['tiles'], TILE_SIZE, TILE_SIZE),
-
     ['toppers'] = GenerateQuads(gTextures['toppers'], TILE_SIZE, TILE_SIZE),
-
     ['bushes'] = GenerateQuads(gTextures['bushes'], 16, 16),
     ['jump-blocks'] = GenerateQuads(gTextures['jump-blocks'], 16, 16),
     ['gems'] = GenerateQuads(gTextures['gems'], 16, 16),
     ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128),
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
     ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16),
-    ['keys-and-locks'] = GenerateQuads(gTextures['keys-and-locks'], 16, 16)
+    ['keys-and-locks'] = GenerateQuads(gTextures['keys-and-locks'], 16, 16),
+    ['flagpoles'] = GenerateQuads(gTextures['flagpoles'], 16, 16)
 }
 
 -- these need to be added after gFrames is initialized because they refer to gFrames from within

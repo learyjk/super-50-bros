@@ -32,7 +32,7 @@ function Player:checkLeftCollisions(dt)
     if (tileTopLeft and tileBottomLeft) and (tileTopLeft:collidable() or tileBottomLeft:collidable()) then
         self.x = (tileTopLeft.x - 1) * TILE_SIZE + tileTopLeft.width - 1
     else
-        
+
         self.y = self.y - 1
         local collidedObjects = self:checkObjectCollisions()
         self.y = self.y + 1
@@ -53,7 +53,7 @@ function Player:checkRightCollisions(dt)
     if (tileTopRight and tileBottomRight) and (tileTopRight:collidable() or tileBottomRight:collidable()) then
         self.x = (tileTopRight.x - 1) * TILE_SIZE - self.width
     else
-        
+
         self.y = self.y - 1
         local collidedObjects = self:checkObjectCollisions()
         self.y = self.y + 1

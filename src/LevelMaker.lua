@@ -17,7 +17,6 @@ function LevelMaker.generate(width, height)
 
     local tileID = TILE_ID_GROUND
     local keyGenerated = false
-    local lockGenerated = false
 
     -- whether we should draw our tiles with toppers
     local topper = true
@@ -39,8 +38,9 @@ function LevelMaker.generate(width, height)
                 Tile(x, y, tileID, nil, tileset, topperset))
         end
 
+        screen = SCREEN_TILE_WIDTH
         -- chance to just be emptiness
-        if math.random(7) == 1 then
+        if math.random(7) == 1 and x ~= width - screen then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -55,8 +55,11 @@ function LevelMaker.generate(width, height)
                     Tile(x, y, tileID, y == 7 and topper or nil, tileset, topperset))
             end
 
-            -- chance to generate a pillar
-            if math.random(8) == 1 then
+            if x == (width - screen) then
+                -- make sure it's a blank ground tile for lock block.
+
+            -- chance to generate a pillar.
+            elseif math.random(8) == 1 then
                 blockHeight = 2
 
                 -- chance to generate bush on pillar
@@ -93,35 +96,54 @@ function LevelMaker.generate(width, height)
                         collidable = false
                     }
                 )
-            end
+            elseif keyGenerated == false and math.random(3) == 1 then
+                table.insert(objects,
+                    -- key
+                    GameObject {
+                        texture = 'keys-and-locks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (6 - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16,
 
-            -- randomly generates a key in first 9/10's of level on any regular
-            -- grould tile.
+                        -- make it a random variant
+                        frame = math.random(4),
+                        collidable = true,
+                        hit = false,
+                        solid = false,
+                        consumable = true,
 
-            if keyGenerated == false then
-                local xLoc = math.random(width - width / 10)
+                        -- collision function takes itself
+                        onConsume = function(player, object)
+                            gSounds['pickup']:play()
+                            player.score = player.score + 100
+                            print("Player got the key!")
 
-                table.insert(objects, -- key block
-                GameObject {
-                    texture = 'keys-and-locks',
-                    x = (xLoc - 1) * TILE_SIZE,
-                    y = (6 - 1) * TILE_SIZE,
-                    width = 16,
-                    height = 16,
+                            -- insert lock block at width - screen
+                            table.insert(objects,
+                                -- lock block
+                                GameObject {
+                                    texture = 'keys-and-locks',
+                                    x = (width - screen - 1) * TILE_SIZE,
+                                    y = (6 - 1) * TILE_SIZE,
+                                    width = 16,
+                                    height = 16,
 
-                    -- make it a random variant
-                    frame = math.random(4),
-                    collidable = true,
-                    hit = false,
-                    solid = false,
-                    consumable = true,
+                                    -- make it a random variant
+                                    frame = math.random(5, 8),
+                                    collidable = true,
+                                    hit = false,
+                                    solid = false,
+                                    consumable = true,
 
-                    -- collision function takes itself
-                    onConsume = function(player, object)
-                        gSounds['pickup']:play()
-                        player.score = player.score + 100
-                    end
-                })
+                                    onConsume = function(player, object)
+                                        gSounds['powerup-reveal']:play()
+                                    end
+                                }
+                            )
+                        end
+                    }
+                )
                 keyGenerated = true
             end
 
