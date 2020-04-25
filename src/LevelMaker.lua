@@ -131,7 +131,7 @@ function LevelMaker.generate(width, height)
                         height = 16,
 
                         -- make it a random variant
-                        frame = math.random(4),
+                        frame = math.random(#KEYS),
                         collidable = true,
                         hit = false,
                         solid = false,
@@ -170,9 +170,31 @@ function LevelMaker.generate(width, height)
                                                 y = (4 - 1) * TILE_SIZE,
                                                 width = 16,
                                                 height = 64,
+                                                frame = math.random(#FLAG_POLES),
+                                                collidable = false,
+                                                hit = false,
+                                                solid = false,
+                                                consumable = true,
 
-                                                -- select random frame from bush_ids whitelist, then random row for variance
-                                                frame = math.random(3)
+                                                onConsume = function(player, object)
+                                                    print("Hit the flag pole!")
+                                                    player.score = player.score + 100
+                                                    gStateMachine:change('play', {
+                                                        score = player.score,
+                                                        width = width + 20
+                                                    })
+                                                end
+                                            }
+                                        )
+                                        table.insert(objects,
+                                            GameObject {
+                                                texture = 'flags',
+                                                x = (width - 2) * TILE_SIZE + TILE_SIZE/2,
+                                                y = (4 - 1) * TILE_SIZE + TILE_SIZE/2,
+                                                width = 16,
+                                                height = 64,
+
+                                                frame = math.random(#FLAGS)
                                             }
                                         )
                                     end

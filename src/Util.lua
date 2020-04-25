@@ -46,7 +46,7 @@ function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     -- for each tile set on the X and Y
     for tilesetY = 1, setsY do
         for tilesetX = 1, setsX do
-            
+
             -- tileset table
             table.insert(tilesets, {})
             tableCounter = tableCounter + 1
@@ -60,6 +60,33 @@ function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     end
 
     return tilesets
+end
+
+function GenerateQuadsFlag(atlas)
+    local x = 16 * 6
+    local y = 0
+
+    local counter = 1
+    local quads = {}
+
+    for i = 0, 3 do
+        -- first column
+        quads[counter] = love.graphics.newQuad(x, y, 16, 16,
+            atlas:getDimensions())
+        counter = counter + 1
+        y = y + 16
+    end
+    x = x + 16
+    y = 0
+    for i = 0, 3 do
+        -- second column
+        quads[counter] = love.graphics.newQuad(x, y, 16, 16,
+            atlas:getDimensions())
+        counter = counter + 1
+        y = y + 16
+    end
+
+    return quads
 end
 
 --[[

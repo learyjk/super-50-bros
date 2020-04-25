@@ -48,7 +48,7 @@ TOPPER_SETS = TOPPER_SETS_WIDE * TOPPER_SETS_TALL
 TILE_SETS = TILE_SETS_WIDE * TILE_SETS_TALL
 
 -- player walking speed
-PLAYER_WALK_SPEED = 60
+PLAYER_WALK_SPEED = 100
 
 -- player jumping velocity
 PLAYER_JUMP_VELOCITY = -150
@@ -84,6 +84,18 @@ CRATES = {
 
 GEMS = {
     1, 2, 3, 4, 5, 6, 7, 8
+}
+
+FLAG_POLES = {
+    1, 2, 3, 4, 5, 6
+}
+
+FLAGS = {
+    1, 2, 3, 4, 5, 6, 7, 8
+}
+
+KEYS = {
+    1, 2, 3, 4
 }
 
 JUMP_BLOCKS = {}
